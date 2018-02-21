@@ -157,10 +157,14 @@ def exp(initial, power):
 
 initial_string = input('Please enter the base number you wish to exponentiate: ')
 initial = int(initial_string)
+print(initial)
 power_string = input('Please put the number you wish to use as the power here: ')
 power = int(power_string)
+print(power)
 
 print(exp(initial, power))
+
+
 #G Extra Credit!!
 ##Write your own versions of the Python built-in functions `min()` and `max()`.
 ##They should take a list as an argument and return the minimum or maximum

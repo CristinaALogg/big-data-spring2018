@@ -19,7 +19,7 @@ print(df)
 df.assign(height = [0.5, 0.4, 0.6])
 
 #Read a csv and import into a dataframe
-df = pd.read_csv('data/skyhook_2017-07.csv', sep=',')
+df = pd.read_csv('/Users/cristinalogg/Desktop/github/big-data-spring2018/week-03/data/skyhook_2017-07.csv', sep=',')
 
 #Print first 5 rows of the data frame.
 df.head()
@@ -90,10 +90,3 @@ df['weekday'] = df['date_new'].apply(lambda x: x.weekday() + 1)
 df['weekday'].replace(7, 0, inplace = True)
 
 #now need to figure out how to select 24 hour subsets for each one of the days. Drop columns outside the 24 hour window in a given day. Iterate thorugh the hours of the week, Taking 0-168 hours in the week and interating in 24 hours. Drop and create query that creates data frame of only the values we want to drop.
-for i in range (0, 168, 24):
-    j = range()
-    df.drop(df[df['weekday'] == (i/24) &
-    (
-    (df['hour']) < i | df['hour'] > j + 18)
-    )
-    ])

@@ -41,7 +41,7 @@ df['weekday'].replace(7, 0, inplace = True)
 
 # Remove hour variables outside of the 24-hour window corresponding to the day of the week a given date lands on.
 for i in range(0, 168, 24):
-  j = range(0,168,1)[i - 5]
+  j = range(0,168,1)[i - 5] #Adjustment factor, cannot just use i-5 as that gives negative numbers.
   if (j > i):
     df.drop(df[
     (df['weekday'] == (i/24)) &
@@ -89,34 +89,21 @@ After running your code, you should have either a new column in your DataFrame o
 # Remove hour variables outside of the 24-hour window corresponding to the day of the week a given date lands on.
 
 #Want hours from 0-23, all i are 5 hours ahead of Boston time.
-df.head()
-
 #Account for the 5 hour time difference between GMT and EST
-
-
-df.head()
 for i in range(0, 168, 24):
   j = range(0,168)[i - 5]
   if (j > i):
     #From Email: Thanks for your note! You're actually super-close. The problem is that you're not quite replacing all possible values in the j > i branch; as it happens, the condition you specify in the else condition is actually the one you should be using to replace the remainder of the range in j > i condition. You'll then need a slightly different replace function in the else branch. Think of it like this: when j > i, that means that you're dealing with a day that's split across the beginning and the end of the range. So in addition to replacing 0 - 18 with 5 - 23, you need to replace 163 - 167 with 0 - 4. This is what the combination of the two replace statements you've written will do.
-    df['hour'].replace(range(i, i+19), range(5, 24), inplace=True)
+    df['hour'].replace(range(i, i+19), range(5, 24), inplace=True) #this is correct
     df['hour'].replace(range(j, j+5), range(0, 5), inplace=True)
-    print (j,i)
   else:
     #From Email: But when the hours are not split, you have a simpler task: replace the range that runs from j is (the bottom of the hour range for a given day, which is smaller than i by 5) to j + 24 (or i + 19) with the range that runs from 0 - 23.
-    df['hour'].replace(range(j, j+24), range(0, 23), inplace=True)
-    print (j,i)
+    df['hour'].replace(range(j, i + 19), range(0, 24), inplace=True) #this is correct
 
-df.head()
-
+#Test to see if it works!
 df['hour'].unique()
 df.groupby('hour')['count'].sum()
-
-#df['week_hour_EST'] = df['hour'].apply(lambda x: x - 5)
-#df['week_hour_EST'].replace(168, 0, inplace = True)
-
-df.head()
-
+#It works!! WOOHOO!
 ```
 
 ## Problem 3: Create a Timestamp Column
@@ -126,8 +113,15 @@ Now that you have both a date and a time (stored in a more familiar 24-hour rang
 ### Solution
 
 ```python
-df['time_hours'] = pd.to_timedelta(Hour('hour'))
-df['timestamp'] = df('date_new') + df('time_hours')
+#Convert hour field to unit hours via pandas to_timedelta
+df['time_hours'] = pd.to_timedelta(df['hour'], unit='h')
+#Create timestamp field that combines date_new (accounting for time change) and time_hours (accounting for time deltas)
+df['timestamp'] = df['date_new'] + df['time_hours']
+
+#Does it work?
+#print(df['timestamp'])
+#df.head()
+#It works!
 ```
 
 ## Problem 4: Create Two Charts of Activity by Hour
@@ -137,20 +131,19 @@ Create two more graphs. The first should be a **line plot** of **total activity*
 ### Solution
 
 ```python
-hour_bar_count = df.groupby('hour')['count'].sum()
-
-#Create a bar chart with the Total GPS Pings by Date as title, assigned a color, and labeled axes.
-figure = hour_bar_count.plot.bar(title="Total GPS Pings by Hour of the Day", color='blue')
-figure.set_xlabel("Hour")
-figure.set_ylabel("Number of GPS Pings")
-
+#Line Plot, Total Activity by Timestamp Field
 timestamp_count = df.groupby('timestamp')['count'].sum()
 
 #Create a bar chart with the Total GPS Pings by Date as title, assigned a color, and labeled axes.
-figure = timestamp_count.plot(title="Total GPS Pings by Time Stamp", color='blue')
-figure.set_xlabel("Time Stamp")
-figure.set_ylabel("Number of GPS Pings")
+timestamp_line_chart = timestamp_count.plot(title="Total GPS Pings by Date", color='red')
+timestamp_line_chart.set_xlabel("Time Stamp")
+timestamp_line_chart.set_ylabel("Number of GPS Pings")
 
+#Bar Chart of Summed Counts by Hour of Day
+hour_bar_count = df.groupby('hour')['count'].sum()
+figure = hour_bar_count.plot.bar(title="Total GPS Pings by Hour of the Day", color='green')
+figure.set_xlabel("Hour of Day")
+figure.set_ylabel("Total Number of GPS Pings")
 ```
 
 ## Problem 5: Create a Scatter Plot of Shaded by Activity
@@ -158,13 +151,26 @@ figure.set_ylabel("Number of GPS Pings")
 Pick three times (or time ranges) and use the latitude and longitude to produce scatterplots of each. In each of these scatterplots, the size of the dot should correspond to the number of GPS pings. Find the [Scatterplot documentation here](http://pandas.pydata.org/pandas-docs/version/0.19.1/visualization.html#scatter-plot). You may also want to look into how to specify a pandas Timestamp (e.g., pd.Timestamp) so that you can write a mask that will filter your DataFrame appropriately. Start with the [Timestamp documentation](https://pandas.pydata.org/pandas-docs/stable/timeseries.html#timestamps-vs-time-spans)!
 
 ```python
+timeranges = df[(df.timestamp == '2017-07-01 14:00:00') | (df.timestamp == '2017-07-04 2:00:00') | (df.timestamp == '2017-07-05 8:00:00')]
 
+#Draw scatterplot with size determined by GPS count
+scatterplot_chart = plt.scatter(timeranges['lon'], timeranges['lat'], s=timeranges['count'])
+plt.title('Number of GPS Pings in 2017 on July 1 at 2PM, July 4 at 2AM, and July 5 at 8AM')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.show()
 ```
 
 ## Problem 6: Analyze Your (Very) Preliminary Findings
 
 For three of the visualizations you produced above, write a one or two paragraph analysis that identifies:
 
-1. A phenomenon that the data make visible (for example, how location services are utilized over the course of a day and why this might by).
+1. A phenomenon that the data make visible (for example, how location services are utilized over the course of a day and why this might be).
+
+It is interesting, in the bar chart entitled "Total GPS Pings by Hour of the Day" that the most pings are during the first three hours of the day.  I actually re-went through all of my code multiple times to make sure I was properly accounting for the 5 hour time change, and it appeared that I was. This makes me wonder why those time frames would have so many more pings than during the commuting/morning hours. I think that perhaps one explanation for this may be that people have their phones on energy saver mode when not plugged in - this mode can mean that phones do not ping GPS unless explicitly asked. As such, when people are moving about (i.e. commuting in the morning), their phones will not ping as much. Yet, when thinking of it this way, there is no reason why the evening commute times wouldn't also be reduced, which we do not see. Overall, I found this to be very curious and I would love to have the opportunity to either further explore how Skyhook pulls GPS locations and under what circumstances they do so. In fact, I was interested enough, I looked at their documentation on their website and had little success in understanding this phenomenon.
+
 2. A shortcoming in the completeness of the data that becomes obvious when it is visualized.
+I am not sure what shortcomings are visualized other than the fact the location pings are to 100m^2 spaces, which aren't that precise in terms of GPS. I also think it only containing hourly information and not minute/second may be an issue as more detailed hourly information can add more granular temporal detail than just hourly information.  
+
 3. How this data could help us identify vulnerabilities related to climate change in the greater Boston area.
+Knowing not only where individuals live but congregate and move between (which may require individual IDs (by device) and timing to the minute/second) would help provide additional insight into what spaces are used by humans in living, working, and movement. 

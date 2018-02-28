@@ -66,7 +66,13 @@ Your first task is to create a bar chart (not a line chart!) of the total count 
 ### Solution
 
 ```python
+#Gather the sum of all ping counts by the new date detailed above.
+date_count = df.groupby('date_new')['count'].sum()
 
+#Create a bar chart with the Total GPS Pings by Date as title, assigned a color, and labeled axes.
+figure = date_count.plot.bar(title="Total GPS Pings by Date", color='blue')
+figure.set_xlabel("Date")
+figure.set_ylabel("Number of GPS Pings")
 ```
 
 ## Problem 2: Modify the Hours Column
@@ -78,6 +84,38 @@ After running your code, you should have either a new column in your DataFrame o
 ### Solution
 
 ```python
+# Create a new hour column.
+# Determine which 24 hour block an hour given corresponds to.
+# Remove hour variables outside of the 24-hour window corresponding to the day of the week a given date lands on.
+
+#Want hours from 0-23, all i are 5 hours ahead of Boston time.
+df.head()
+
+#Account for the 5 hour time difference between GMT and EST
+
+
+df.head()
+for i in range(0, 168, 24):
+  j = range(0,168)[i - 5]
+  if (j > i):
+    #From Email: Thanks for your note! You're actually super-close. The problem is that you're not quite replacing all possible values in the j > i branch; as it happens, the condition you specify in the else condition is actually the one you should be using to replace the remainder of the range in j > i condition. You'll then need a slightly different replace function in the else branch. Think of it like this: when j > i, that means that you're dealing with a day that's split across the beginning and the end of the range. So in addition to replacing 0 - 18 with 5 - 23, you need to replace 163 - 167 with 0 - 4. This is what the combination of the two replace statements you've written will do.
+    df['hour'].replace(range(i, i+19), range(5, 24), inplace=True)
+    df['hour'].replace(range(j, j+5), range(0, 5), inplace=True)
+    print (j,i)
+  else:
+    #From Email: But when the hours are not split, you have a simpler task: replace the range that runs from j is (the bottom of the hour range for a given day, which is smaller than i by 5) to j + 24 (or i + 19) with the range that runs from 0 - 23.
+    df['hour'].replace(range(j, j+24), range(0, 23), inplace=True)
+    print (j,i)
+
+df.head()
+
+df['hour'].unique()
+df.groupby('hour')['count'].sum()
+
+#df['week_hour_EST'] = df['hour'].apply(lambda x: x - 5)
+#df['week_hour_EST'].replace(168, 0, inplace = True)
+
+df.head()
 
 ```
 
@@ -88,16 +126,30 @@ Now that you have both a date and a time (stored in a more familiar 24-hour rang
 ### Solution
 
 ```python
-
+df['time_hours'] = pd.to_timedelta(Hour('hour'))
+df['timestamp'] = df('date_new') + df('time_hours')
 ```
 
-## Problem 4: Create Two Line Charts of Activity by Hour
+## Problem 4: Create Two Charts of Activity by Hour
 
 Create two more graphs. The first should be a **line plot** of **total activity** by your new `timestamp` field---in other words a line graph that displays the total number of GPS pings in each hour over the course of the week. The second should be a **bar chart** of **summed counts** by hours of the day---in other words, a bar chart displaying the sum of GPS pings occurring across locations for each of the day's 24 hours.
 
 ### Solution
 
 ```python
+hour_bar_count = df.groupby('hour')['count'].sum()
+
+#Create a bar chart with the Total GPS Pings by Date as title, assigned a color, and labeled axes.
+figure = hour_bar_count.plot.bar(title="Total GPS Pings by Hour of the Day", color='blue')
+figure.set_xlabel("Hour")
+figure.set_ylabel("Number of GPS Pings")
+
+timestamp_count = df.groupby('timestamp')['count'].sum()
+
+#Create a bar chart with the Total GPS Pings by Date as title, assigned a color, and labeled axes.
+figure = timestamp_count.plot(title="Total GPS Pings by Time Stamp", color='blue')
+figure.set_xlabel("Time Stamp")
+figure.set_ylabel("Number of GPS Pings")
 
 ```
 

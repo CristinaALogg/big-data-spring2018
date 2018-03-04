@@ -130,7 +130,8 @@ We also set some variables to store our parameters. First, we specify a location
 
 We also build our function to include a parameter `write`, which, if `True`, instructs our function to write the returned tweets to a `json` file, the location of which is passed through the `file` parameter. Finally, we can specify a t_max, which is the maximum number of tweets the search should return before stopping---this is low at the moment, because we want to be able to test our function, but we can ratchet it up to download (literally) millions of Tweets.
 
-Note that we set a number of default values in our `get_tweets` function, including default values for `tweet_max` and a default value of an empty string for `search_term`. We can adjust these when we call the function after defining it by passing parameters (see the bottom of the below code block).
+Note that we set a number of default values in our `get_tweets` function, including default values for `tweet_max` and a default value of an empty string for `search_term`. We can adj
+ust these when we call the function after defining it by passing parameters (see the bottom of the below code block).
 
 ```python
 def get_tweets(

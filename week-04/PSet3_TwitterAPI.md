@@ -28,19 +28,19 @@ One of the dangers of cleaning data is that you inadvertently delete data that i
 
 Using the Twitter REST API, collect at least 80,000 tweets. Do not specify a search term. Use a lat/lng of `42.359416,-71.093993` and a radius of `5mi`. Note that this will probably take 20-30 minutes to run.
 
-### Step 2
+### Step 2 - Clean Location Data & Create Pie Chart
 
 Clean up the data so that variations of the same user-provided location name are replaced with a single variation. Once you've cleaned up the locations, create a pie chart of user-provided locations. Your pie chart should strive for legibility! Let the [`matplotlib` documentation](https://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.pie.html) be your guide!
 
-### Step 3
+### Step 3 - Create Scatterplot of Long/Lat
 
 Create a scatterplot showing all of the tweets are that are geolocated (i.e., include a latitude and longitude).
 
-### Step 4
+### Step 4 - Create Search Term & Re-Run
 
-Pick a search term (e.g., "housing", "climate", "flood") and collect tweets containing it. Use the same lat/lon and search radius for Boston as you used above. Dpending on the search term, you may find that there are relatively few available tweets.
+Pick a search term (e.g., "housing", "climate", "flood") and collect tweets containing it. Use the same lat/lon and search radius for Boston as you used above. Depending on the search term, you may find that there are relatively few available tweets.
 
-### Step 5
+### Step 5 - Clean New Search w/Same Code
 
 Clean the search term data as with the previous data.
 

@@ -1,4 +1,4 @@
-#An API is a set of instructions for interfacing with software (getting it to talk with each other). This API is a set of instructions for getting into Twitter databases. Reading the documentation - we only have a week of tweets and random sampling.
+gm#An API is a set of instructions for interfacing with software (getting it to talk with each other). This API is a set of instructions for getting into Twitter databases. Reading the documentation - we only have a week of tweets and random sampling.
 import jsonpickle
 import tweepy
 import pandas as pd
@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 import os
 #Change into subfolder as needed.
-os.chdir('week-04')
+os.chdir('/Users/cristinalogg/Desktop/github/big-data-spring2018/week-04')
 from twitter_keys import api_key, api_secret
 
 auth = tweepy.AppAuthHandler(api_key, api_secret)
@@ -34,8 +34,8 @@ def get_tweets(
     geo, #geo allows us to specify a Location via lat/long and radius
     out_file, #specify type of file to write to
     search_term = '', #what search term are you interested in?
-    tweet_per_query = 100, #
-    tweet_max = 150,
+    tweet_per_query = 80, #
+    tweet_max = 100,
     since_id = None, #allows you to create at the front end a manual window, so you can examine the json file and specify it as a sinceID in case you lose connection and have to redo it all over again.
     max_id = -1,
     write = False
@@ -94,21 +94,14 @@ def get_tweets(
 # Set a Lat Lon
 latlng = '42.359416,-71.093993' # Eric's office (ish)
 # Set a search distance
-radius = '1mi'
+radius = '5mi'
 # See tweepy API reference for format specifications
 geocode_query = latlng + ',' + radius
 # set output file location
-file_name = 'data/tweets.json'
+file_name = 'data/tweet_trial2.json'
 # set threshold number of Tweets. Note that it's possible
 # to get more than one
-t_max = 200
-
-get_tweets(
-  geo = geocode_query,
-  tweet_max = t_max,
-  write = True,
-  out_file = file_name
-)
+t_max = 100
 
 #If you look at the json you can see a giant pile of crap... Now you know why you need to parse it. Also, look at it online via json viewer.
 def parse_tweet(tweet):
@@ -134,7 +127,7 @@ tweets = get_tweets(
   out_file = file_name
 )
 
-tweetdf = pd.read_json('/Users/cristinalogg/Desktop/github/big-data-spring2018/week-04/data/tweets.json')
+tweetdf = pd.read_json('/Users/cristinalogg/Desktop/github/big-data-spring2018/week-04/data/tweet_trial2.json')
 tweets.dtypes
 tweets['location'].unique()
 
@@ -173,6 +166,7 @@ plt.show()
 
 bos_list = tweets[tweets['location'].str.contains("Boston")]['location'] #for where tweets have location, create a mask, where the string within the locationcon
 tweets['location'].replace(bos_list, 'Boston, MA', inplace = True)
+
 bos_list = tweets[tweets['location'].str.contains("Cambridge")]['location'] #for where tweets have location, create a mask, where the string within the locationcon
 tweets['location'].replace(bos_list, 'Cambridge, MA', inplace = True)
 bos_list = tweets[tweets['location'].str.contains("cambridge")]['location'] #for where tweets have location, create a mask, where the string within the locationcon

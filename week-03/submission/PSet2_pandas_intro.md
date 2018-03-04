@@ -96,9 +96,12 @@ for i in range(0, 168, 24):
     #From Email: Thanks for your note! You're actually super-close. The problem is that you're not quite replacing all possible values in the j > i branch; as it happens, the condition you specify in the else condition is actually the one you should be using to replace the remainder of the range in j > i condition. You'll then need a slightly different replace function in the else branch. Think of it like this: when j > i, that means that you're dealing with a day that's split across the beginning and the end of the range. So in addition to replacing 0 - 18 with 5 - 23, you need to replace 163 - 167 with 0 - 4. This is what the combination of the two replace statements you've written will do.
     df['hour'].replace(range(i, i+19), range(5, 24), inplace=True) #this is correct
     df['hour'].replace(range(j, j+5), range(0, 5), inplace=True)
+    #df['hour'].replace(range(j, j + 5, 1), range(-5, 0, 1), inplace=True)
+    #df['hour'].replace(range(i, i + 19, 1), range(0, 19, 1), inplace=True)
   else:
     #From Email: But when the hours are not split, you have a simpler task: replace the range that runs from j is (the bottom of the hour range for a given day, which is smaller than i by 5) to j + 24 (or i + 19) with the range that runs from 0 - 23.
     df['hour'].replace(range(j, i + 19), range(0, 24), inplace=True) #this is correct
+    #df['hour'].replace(range(j, j + 24, 1), range(-5, 19, 1), inplace=True)
 
 #Test to see if it works!
 df['hour'].unique()

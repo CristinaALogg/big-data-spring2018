@@ -85,7 +85,7 @@ import numpy as np
 import os
 %matplotlib inline
 ## make sure you set the DATA path to be to the folder where you downloaded the data at the beginning of class
-DATA = "/Users/ehuntley/Desktop/week-05/landsat"
+DATA = "/Users/cristinalogg/Desktop/github/big-data-spring2018/week-05/ws04_materials"
 ```
 
 ## Calculating a Normalized Difference Vegetation Index
@@ -99,7 +99,7 @@ Where NIR stands for near-infrared and red is light reflected in the red region.
 Okay, enough biophysics! Let's calculate the NDVI. We begin by reading in our files.
 
 ```python
-b4_raster = os.path.join(DATA, 'b4.tif')
+b4_raster = os.path.join(DATA, 'b4.tif')  #Adds to array.
 b5_raster = os.path.join(DATA, 'b5.tif')
 
 # Load in Red band
@@ -116,7 +116,7 @@ nir = nir_band.ReadAsArray()
 What we see above is `gdal` proceeding in three steps. It opens a connection to the file, obtains the raster band (all the data we'll be working with only contains band 1), and reads in a `numpy` array so that we can process it. We can see that these are `numpy` arrays by checking their type.
 
 ```python
-type(nir)
+type(nir) #This is the numpy array you get from the above calculations.
 ```
 
 These `red` and `nir` arrays are what we will be working with to calculate our NDVI! First, let's examine one of them by plotting it using `matplotlib`'s `imshow` (image show) function:
@@ -139,7 +139,7 @@ Now let's run it!
 
 ```python
 # here we are calling our function within the plot!
-plt.imshow(ndvi_calc(red, nir), cmap="YlGn")
+plt.imshow(ndvi_calc(red, nir), cmap="YlGn") #Now we get a bunch of zero values!! This tells us that we can't store positive and negative values in here, because they are unsigned.  I.e. issues with indices that have negative numbers or decimal points. Now we need to use numpy as type method ot conver them to float32.
 plt.colorbar()
 ```
 
@@ -152,7 +152,7 @@ nir.dtype
 `uint16` refers to an unsigned 16-bit integer. So in addition to the fact that we're doing non-integer math with integer datatypes, we're also potentially creating negative values, which doesn't work so well with an unsigned data type. Good thing we can easily convert these `numpy` arrays using the `numpy` `.astype()` method.
 
 ```python
-red = red.astype(np.float32)
+red = red.astype(np.float32) #Taking integers, converting them into signed decimal places, so we don't have to worry about negatives and decimals.
 nir = nir.astype(np.float32)
 
 plt.imshow(ndvi_calc(red, nir), cmap='YlGn')
@@ -162,7 +162,7 @@ plt.colorbar()
 Better! We've just made a map of vegetated land cover using a new raster data layer derived from red and near-infrared Landsat data! Let's store the results of this function as a new variable.
 
 ```python
-ndvi = ndvi_calc(red, nir)
+ndvi = ndvi_calc(red, nir) #store it as a new variable.
 ```
 
 **Note About Errors:** We're getting some type errors, but that's because it's dividing by null values - the function still works and will serve our purposes just fine. You may continue to get similar errors throughout the exercise. Nothing to worry about!
@@ -199,7 +199,7 @@ We now need to read in some correction values stored in the Landsat metadata in 
 
 ```python
 # make this path the local path to your MTL.txt file that you downloaded at the start of the workshop
-meta_file = '/Users/ehuntley/Desktop/week-05/landsat/MTL.txt'
+meta_file = '/Users/cristinalogg/Desktop/github/big-data-spring2018/week-05/ws04_materials/MTL.txt'
 
 with open(meta_file) as f:
     meta = f.readlines()
@@ -211,14 +211,14 @@ Check out the format of the `meta` list; each line of the text file is stored as
 # Define terms to match
 matchers = ['RADIANCE_MULT_BAND_10', 'RADIANCE_ADD_BAND_10', 'K1_CONSTANT_BAND_10', 'K2_CONSTANT_BAND_10']
 
-[s for s in meta if any(xs in s for xs in matchers)]
+[s for s in meta if any(xs in s for xs in matchers)] #Runs through text to see what variables we are interested in and reutrns them.
 ```
 
 We see that we've returned a list containing our variables and their values in the format `    RADIANCE_MULT_BAND_10 = 3.3420E-04\n` where `\n` is a line break character. We can use two string methods to first, split the resulting string at the `=` and return what comes after the equals sign (`.split(' = ')[1]`) and second, to strip the `\n` from the end (`.strip('\n')`). We finally coerce the resulting number to a floating point data type. Let's define a function to do this:
 
 ```python
 def process_string (st):
-    return float(st.split(' = ')[1].strip('\n'))
+    return float(st.split(' = ')[1].strip('\n')) #Parser splits each of these at the equal sign and converts the value to a floating point.
 ```
 
 Let's run that list comprehension again, applying our function to the results in a variable, `matching`.
@@ -230,7 +230,7 @@ matching = [process_string(s) for s in meta if any(xs in s for xs in matchers)]
 Finally, we can assign each element of the list to a different variable name.
 
 ```python
-rad_mult_b10, rad_add_b10, k1_b10, k2_b10 = matching
+rad_mult_b10, rad_add_b10, k1_b10, k2_b10 = matching #assign them readable value names.
 ```
 
 We now calculate a series of different derived values; we're about to play-act the role of geophysicist. Of course, much of this is simply applying other people's methods - we can look to the scientific literature to find methods and apply them to our datasets. We don't necessarily need to understand every single step... in fact, it's common that working with datasets involves applying methods without getting too bogged down in the specifics. We're just looking for an estimate of land surface temperature, not a rigorous, geoscientist-approved model (and, anyway, we can use geoscientist approved models).

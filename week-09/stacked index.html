@@ -30,11 +30,10 @@
 // Our D3 code will go here
 var ratData = [];
 
-d3.csv("/data/rat-squirrel-data.csv", function(d) {
+d3.csv("/data/neigh_311.csv", function(d) {
 	return {
-		city: d.city,
-		rats: +d.rats,
-		squirrels: +d.squirrels
+		neigh : d.neighborhood,
+		num_311 : +d.num_311
 	};
 }, function(error, rows) {
 	data = rows;
@@ -64,7 +63,7 @@ function createVisualization() {
 	var dataset = d3.layout.stack()(["rats", "squirrels"].map(function(ratData) {
 		return data.map(function(d) {
 			return {
-				x: d.city,
+				x: d.neighborhood,
 				y: +d[ratData]
 			};
 		});
@@ -81,10 +80,10 @@ function createVisualization() {
 	var colors = ["#dfd6d6", "#d85f41"];
 
 	// Create groups for each series, rect elements for each segment
-	var groups = svg.selectAll("g.city")
+	var groups = svg.selectAll("g.neighborhood")
 		.data(dataset)
 		.enter().append("g")
-		.attr("class", "city")
+		.attr("class", "neighborhood")
 		.style("fill", function(d, i) { return colors[i]; });
 
 	var rect = groups.selectAll("rect")

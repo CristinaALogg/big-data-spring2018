@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> Mapping!</title>
+  <script src='http://d3js.org/d3.v4.min.js' charset="utf-8"></script>
+  <meta charset="utf-8">
+  <script src="data/neigh_311.json"></script>
+</head>
+<body>
+  <script>
+    var width  = 700; //Create global variables for width and height.
+    var height = 580;
+
+    var svg = d3.select("body")
+      .append( "svg" )
+      .attr( "width", width )
+      .attr( "height", height );
+
+    var g = svg.append("g");  //Create empty group to slot elements into
+    var rodents = svg.append("g");
+
+    var albersProjection = d3.geoAlbers()
+      .scale(190000)  //Doing city of Boston map, if doing full world, want it smaller (smaller number, bigger the scale), not conventional cartographic scale. Smaller numbers mean larger map extends. DO NOT THINK IN CARTOGRAPHIC SCALE HER.
+      .rotate( [71.057, 0] ) //Longitude coordinates.
+      .center( [0, 42.313] ) //Not longitude/latitude coordinates. Setting center at 42.313 degrees latiude, i.e. Boston.
+      .translate( [width/2, height/2] ); //Coordinates in D3 always from the upper left. You need to specify it otherwise. To make the map fully appear in the svg we are creating, we need to move it by half the width (centered on 0) and half the total height.
+
+    var geoPath = d3.geoPath() //allows you to set projection.
+      .projection( albersProjection );
+
+//Draw stuff in the G object we created earlier. Select stuff and then specify behavior.
+  g.selectAll("path")
+    .data(neighborhoods_json.features)
+    .enter() //specify action to take if more features than elements in webpage
+    .append("path")
+    .attr("fill", "#ccc")
+    .attr("stroke", "#333")
+    .attr("d", geoPath); //This D attribute is speficying a coordinate system here, according to the geoPath object we created with the albersProjection we defined above.
+
+  rodents.selectAll("path")
+    .data(rodents_json.features)
+    .enter() //specify action to take if more features than elements in webpage
+    .append("path")
+    .attr("fill", "#900")
+    .attr("stroke", "#999")
+    .attr("d", geoPath)
+    .attr("class", "incident");
+
+  </script>
+</body>
+</html>

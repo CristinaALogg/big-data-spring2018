@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+
+.counties {
+  fill: none;
+}
+
+.states {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+</style>
+</head>
+<body>
+<svg width="960" height="600"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+<script>
+
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+var unemployment = d3.map();
+
+var path = d3.geoPath();
+
+var color = d3.scaleThreshold() //will crate a range of colors.
+    .domain(d3.range(2, 10))
+    .range(d3.schemeBlues[9]); //set output range to a color scheme. This is why the scale chromatic java script is above.
+
+d3.queue()
+    .defer(d3.json, "boston_neigh.json")
+    .defer(d3.tsv, "unemployment.csv", function(d)  {
+      unemployment.set(d.id, +d.rate);})
+    .await(ready); //This is to prepare for us not having the file ready to be loaded, this prevents it from crashing.
+
+function ready(error, us) { //IF there is an issue, tell us what it is.  D3 specific method, it calls things in order fromabove.
+  if (error) throw error;
+
+  svg.append("g")
+      .attr("class", "counties")
+    .selectAll("path")//select all non existent paths and bind data to them.
+    .data(topojson.feature(us, us.objects.counties).features)//specifying sublists we are interested in the topojson file that was added. Return counties as features.
+    .enter().append("path")
+      .attr("fill", function(d) { return color(d.rate = unemployment.get(d.id)); })
+      .attr("d", path)
+    .append("title")
+      .text(function(d) { return d.rate + "%"; });
+
+  svg.append("path")
+      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+      .attr("class", "states")
+      .attr("d", path);
+}
+
+
+
+</script>
+</body>
+</html>

@@ -22,7 +22,7 @@ logglist.append('Last')
 print(logglist)
 ##A.5. Get the list length and print it.
 print(len(logglist))
-
+'''cristina, the last part of question 1 is missing, but otherwise, great job!'''
 
 #B Strings!!
 sentence_words = ['I', 'am', 'learning', 'Python', 'to', 'munge', 'large','datasets', 'and', 'visualize', 'them']
@@ -85,12 +85,27 @@ print("Your chosen lower bound is " + aString + " and your chosen upper bound is
 
 print(C1Function(b, a))
 
+'''cristina, great set up but it doesn't run if you don't put a number in for the lowerbound because it doesn't recognize a as 0 when you are turning aString into a until the function runs, so you should reorder it a bit. also, you can simplify it in a few ways. here is an example of simpler way to run this:
+
+'''
+def C1Function(b, a):
+    a = input('Enter your lower bound integer here or press enter for it to be 0: \n')
+    if a == '':
+        a = 0
+    b = input('Please enter your higher bound integer here: ')
+    result = randint(int(a), int(b))
+    return result
+
+C1Function(b, a)
+## end of PH COMMENTS
+
 ##C.2 Test your function by adding the following 2 assert statements to your file
 ##(replace myrandom and low with the names you used). The [`assert`]
 ##(https://docs.python.org/3/reference/simple_stmts.html#assert) statement
 ##helps you debug, by testing if a statement is true.
 assert(0 <= C1Function(100) <= 500)
 assert(50 <= C1Function(100, a = 50) <= 100)
+
 
 
 # D. String Formatting Function!!
@@ -110,6 +125,7 @@ n = int(nString)
 title = input('Please enter the title of the book here: ')
 
 print(D1Function(n, title))
+'''good job, cristina. careful not to be redundant. you're printing multiple times'''
 ##Test D1Function with a lowercase title.
 #D1Function(10, 'This is a test')
 
@@ -140,7 +156,31 @@ def E1Function(password):
 password = input('Enter your preferred password: ')
 #print (password)
 print (E1Function(password))
+'''you don't need print here to run your function, especially since you use print in your function itself. plus, the function doesn't easily run multiple times if there is a failed attempt. see below for some slight modifications to make it smooth.'''
 
+def E1Function():
+    # PH PUT THE INPUT FUNCTION INSIDE YOUR FUNCTION FOR SMOOTH RUNNING.
+    password = input('Enter your preferred password: ')
+    specialsymbols = ['!', '?', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=']
+    number_of_digits = 0
+    if len(password) > 14:
+        print("Your password is too long.")
+    elif len(password) < 8:
+        print ("Your password is too short.")
+    elif not any(char.isupper() for char in password):
+        print ("Your password must have at least one upper case character.")
+    elif not any(char in specialsymbols for char in password):
+        print ("Your password must have at least one special symbol.")
+    elif len([char for char in password if char.isdigit()]) <2:
+        print ("Your password must have at least two numbers in it.")
+    else:
+        print('Your password meets all the requirements.')
+
+#password = input('Enter your preferred password: ')
+#print (password)
+#print (E1Function(password))
+## use this instead:
+E1Function()
 
 #F. Exponentiation!!
 ##Create a function called `exp` that accepts two integers and then `return`s
@@ -163,6 +203,7 @@ power = int(power_string)
 print(power)
 
 print(exp(initial, power))
+'''again, you have too many print functions here. it makes it confusing to see which is the actual output we want to pay attention to.'''
 
 
 #G Extra Credit!!
@@ -206,3 +247,15 @@ print(final_input)
 
 print(max_extra(final_input))
 print(min_extra(final_input))
+
+'''almost there, but not quite! see below for a correct answer.'''
+num_list = [2,-3,45,30,77,0]
+max = 0
+min = 0
+for i in num_list:
+    if i > max:
+        max = i
+    elif i < min:
+        min = i
+print(min)
+print(max)

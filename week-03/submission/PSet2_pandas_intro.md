@@ -30,6 +30,7 @@ import matplotlib.pylab as plt
 
 # Read in the data
 
+
 df = pd.read_csv('week-03/data/skyhook_2017-07.csv', sep=',')
 
 # Create a new date column formatted as datetimes.
@@ -122,8 +123,8 @@ df['time_hours'] = pd.to_timedelta(df['hour'], unit='h')
 df['timestamp'] = df['date_new'] + df['time_hours']
 
 #Does it work?
-#print(df['timestamp'])
-#df.head()
+print(df['timestamp'])
+df.head()
 #It works!
 ```
 
@@ -169,6 +170,8 @@ plt.show()
 For three of the visualizations you produced above, write a one or two paragraph analysis that identifies:
 
 1. A phenomenon that the data make visible (for example, how location services are utilized over the course of a day and why this might be).
+
+EH: Yeahhhhh... as became abundantly apparent, this was not a property of the data but a mistake in the instructional material. C'est la vie. You did a pretty commendable job seeking order in madness, though. However, you seem to have only analyzed one of the visualizations...
 
 I found it  interesting, in the bar chart entitled "Total GPS Pings by Hour of the Day", that the most pings are during the first three hours of the day.  I actually re-went through all of my code multiple times to make sure I was properly accounting for the 5 hour time change, and it appeared that I was. This makes me wonder why those time frames would have so many more pings than during the commuting/morning hours. I think that perhaps one explanation for this may be that people have their phones on energy saver mode when not plugged in - this mode can mean that phones do not ping GPS unless explicitly asked. As such, when people are moving about (i.e. commuting in the morning), their phones will not ping as much. Yet, when thinking of it this way, there is no reason why the evening commute times wouldn't also be reduced, which we do not see. Overall, I found this to be very curious and I would love to have the opportunity to further explore how Skyhook pulls GPS locations and under what circumstances they do so. In fact, I was interested enough, I looked at their documentation on their website and had little success in understanding this phenomenon.
 

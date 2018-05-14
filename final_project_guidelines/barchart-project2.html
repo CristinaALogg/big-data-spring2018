@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Top 15 Parks by SkyScraper Pings</title>
+	<title>Top 10 City of Boston Parks by Skyhook Pings</title>
+	<h2>Top 10 Parks in the City of Boston by Skyhook Pings</h2>
+	<b> Data Source: </b> Boston Open Space from <a href = "https://data.boston.gov/dataset/open-space" > Analyze Boston</a> and 
+	<p></p>
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<style>
 		text {
@@ -16,7 +19,7 @@
 	// Our D3 code will go here.
 	var pingData = [];
 
-	d3.csv("all_parks_counts_top15.csv", function(d) {
+	d3.csv("all_parks_counts_top10.csv", function(d) {
 		return {
 			site : d.SITE_NAME,
 			pings : +d.PING_CT

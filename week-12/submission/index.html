@@ -178,23 +178,23 @@
 							.style("fill", function(d) { return color(calls_pct[d.properties.OBJECTID])})
 
 							//The next line assigns each state a class based on its name: AK, AR, etc.
-							.attr("class", function(d) { return nameID[d.properties.OBJECTID].replace(/\s+/, ""); })
+							.attr("class", function(d) { return nameID[d.properties.OBJECTID].replace(/\s+/g, ""); })
 
 							//This part adds the class "hover" to the part of hte city and its matching rectangle in the chart
 							.on("mouseover", function(d) {
 								console.log(nameID[d.properties.OBJECTID]);
-								d3.selectAll("." + nameID[d.properties.OBJECTID].replace(/\s+/, "")).classed("hover",true);
+								d3.selectAll("." + nameID[d.properties.OBJECTID].replace(/\s+/g, "")).classed("hover",true);
 								return tooltip.style("visibility", "visible").text(nameID[d.properties.OBJECTID] + ": " + calls_pct[d.properties.OBJECTID].toFixed(2) + "%");
 							})
 
 							.on("mousemove", function(d) {
-								d3.selectAll("." + nameID[d.properties.OBJECTID].replace(/\s+/, "")).classed("hover",true);
+								d3.selectAll("." + nameID[d.properties.OBJECTID].replace(/\s+/g, "")).classed("hover",true);
 								return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px").text(nameID[d.properties.OBJECTID] + ": " + calls_pct[d.properties.OBJECTID].toFixed(2) + "%");
 							})
 
 							.on("mouseout", function(d) {
 								d3.select(this).style("fill",function(d) { return color(calls_pct[d.properties.OBJECTID])});
-								d3.selectAll("." + nameID[d.properties.OBJECTID].replace(/\s+/, "")).classed("hover", false);
+								d3.selectAll("." + nameID[d.properties.OBJECTID].replace(/\s+/g, "")).classed("hover", false);
 								return tooltip.style("visibility", "hidden");
 							});
 
@@ -312,7 +312,7 @@ Either write a parser in JavaScript that removes the space, use a string method 
 	      .attr("height", function(d) { return y(d[0]) - y(d[1]); })
 	      .attr("width", x.bandwidth())
 				//The next line assigns each rectangle a class that matches the state names above: AK, AR, etc.
-			  .attr("class", function (d) { return d.data.Name.replace(/\s+/, "");})
+			  .attr("class", function (d) { return d.data.Name.replace(/\s+/g, "");})
 			  //The mouseover functions work just like the ones in the map, they add "hover" class to all matching elements
 			.on("mouseover", function(d) {
 					//d3.select(this).classed("hover",true);

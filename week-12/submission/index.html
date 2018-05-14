@@ -316,12 +316,12 @@ Either write a parser in JavaScript that removes the space, use a string method 
 			  //The mouseover functions work just like the ones in the map, they add "hover" class to all matching elements
 			.on("mouseover", function(d) {
 					//d3.select(this).classed("hover",true);
-					d3.selectAll("." + d.data.Name).classed("hover",true);
+					d3.selectAll("." + d.data.Name.replace(/\s+/g, "")).classed("hover",true);
 					console.log(d.data.Name);
 				})
 			.on("mouseout", function(d) {
 				//d3.select(this).classed("hover",false);
-				d3.selectAll("." + d.data.Name).classed("hover", false);
+				d3.selectAll("." + d.data.Name.replace(/\s+/g, "")).classed("hover", false);
 			});
 
 	  g.append("g")
